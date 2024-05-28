@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "Classification Labeler"
+version = "0.1.0"
+description = ""
+authors = ["Ivan Khodnenko"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+dash = "^2.17.0"
+dash-bootstrap-components = "^1.6.0"
+numpy = "^1.26.4"
+scikit-learn = "^1.5.0"
+pandas = "^2.2.2"
+dash-extensions = "^1.0.15"
+pydantic = "^2.7.1"
+pydantic-settings = "^2.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
