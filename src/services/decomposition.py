@@ -20,6 +20,19 @@ def decompose(
         impute_method: str | None = 'sklearn.impute.KNNImputer',
         scale_method: str | None = 'sklearn.preprocessing.StandardScaler'
 ) -> pd.DataFrame:
+    """
+
+    :param df: source DataFrame without "exclude columns"
+    :param target_column: name of target column
+    :param method_name: decomposition method name.
+        Passed method must be in mapping "_decomposition_methods_mapping"
+    :param method_params: parameters for decomposition method
+        For now I did not add this field into interface
+    :param encode_method: full path of encoding method to encode object or categorical features
+    :param impute_method: full path of impute method to impute nan values
+    :param scale_method: full path of scale method to scale only numerical columns
+    :return:
+    """
 
     if method_params is None:
         method_params = {}
