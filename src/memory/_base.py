@@ -7,7 +7,13 @@ class AbstractMemory(ABC):
     def set_initial_df(self, df: pd.DataFrame) -> None:
         raise NotImplementedError()
 
+    def set_exclude_columns(self, columns: list[str]) -> None:
+        raise NotImplementedError()
+
     def get_initial_df(self) -> pd.DataFrame:
+        raise NotImplementedError()
+
+    def get_df(self) -> pd.DataFrame:
         raise NotImplementedError()
 
     def set_target_column(self, target_column: str):

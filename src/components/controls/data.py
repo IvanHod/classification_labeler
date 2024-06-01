@@ -7,7 +7,6 @@ init_files_names = files.load_csv_names(include_absent=True)
 
 
 data_list = dbc.AccordionItem([
-    dbc.Label('Upload file'),
     dbc.Row([
         dbc.Col([
             dcc.Upload(id='source-file',
@@ -35,6 +34,12 @@ data_list = dbc.AccordionItem([
             dcc.Dropdown(init_files_names, files.MSG_NO_FILE, id='source-file_name')
         ], class_name='col-12')
     ]),
+    dbc.Row([
+        dbc.Label('Exclude features:'),
+        dbc.Col([
+            dcc.Dropdown(['-'], '-', id='feature_column_names_exclude', multi=True)
+        ], class_name='col-12')
+    ], class_name='mt-2'),
     dbc.Row([
         dbc.Label('Target column:'),
         dbc.Col([

@@ -36,8 +36,9 @@ def make_alert(output: list[Any],
 
 
 @app.callback(
-    Output('target_column_name', 'options', allow_duplicate=True),
-    Output('source-file_name', 'options', allow_duplicate=True),
+    Output('feature_column_names_exclude', 'options'),
+    Output('target_column_name', 'options'),
+    Output('source-file_name', 'options'),
     Output('alert-fail', 'is_open', allow_duplicate=True),
     Output('alert-fail', 'children', allow_duplicate=True),
     Output('alert-success', 'is_open', allow_duplicate=True),
@@ -78,7 +79,7 @@ def on_file_uploaded_or_selected(file: str, file_name: str, source_file_name: st
 
     columns = files.get_df_columns(df)
 
-    return make_alert([columns, file_list],
+    return make_alert([columns, columns, file_list],
                       success_msg=f'File "{file_name}" was uploaded. Now select the target column')
 
 
@@ -89,20 +90,23 @@ def on_file_uploaded_or_selected(file: str, file_name: str, source_file_name: st
     Output('alert-success', 'is_open', allow_duplicate=True),
     Output('alert-success', 'children', allow_duplicate=True),
     Input('target_column_name', 'value'),
+    State('feature_column_names_exclude', 'value'),
     prevent_initial_call=True,
 )
-def on_target_selected(target_column: str):
+def on_target_selected(target_column: str, exclude_columns: list[str]):
     """
     Output -> draw graph (plot)
 
     :param target_column:
+    :param exclude_columns:
     :return:
     """
     fig_patch = Patch()
     if not target_column:
         return make_alert([fig_patch])
 
-    df: pd.DataFrame = memory.get_initial_df()
+    memory.set_exclude_columns(exclude_columns)
+    df: pd.DataFrame = memory.get_df()
 
     df_decomposed = decomposition.decompose(df, target_column=target_column)
     memory.set_target_column(target_column)
@@ -152,13 +156,13 @@ def on_highlight_point(label: str, selected_data: dict[str, list]):
 
 
 @app.callback(
-    Output('hidden-save-div', 'children', allow_duplicate=True),
     Output('alert-fail', 'is_open', allow_duplicate=True),
     Output('alert-fail', 'children', allow_duplicate=True),
     Output('alert-success', 'is_open', allow_duplicate=True),
     Output('alert-success', 'children', allow_duplicate=True),
     State('input-output-file_name', 'value'),
     Input('btn-save_results', 'n_clicks'),
+    prevent_initial_call=True
 )
 def save_data(filename: str, __) -> tuple:
     """
@@ -169,12 +173,12 @@ def save_data(filename: str, __) -> tuple:
     :return:
     """
     if filename is None:
-        return make_alert([''], fail_msg='File name is empty')
+        return make_alert([], fail_msg='File name is empty')
 
     df: pd.DataFrame = memory.get_output_df()
     files.save_df(df, file_name=filename, as_output=True)
 
-    return make_alert([f'Filename: {filename}'], success_msg=f'The file {filename} was save in output folder')
+    return make_alert([], success_msg=f'The file {filename} was save in output folder')
 
 
 if __name__ == "__main__":

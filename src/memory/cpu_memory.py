@@ -7,16 +7,30 @@ class CPUMemory(AbstractMemory):
     _df_init: pd.DataFrame | None = None
     _df_decomposed: pd.DataFrame | None = None
     _target_column: str | None = None
+
+    _exclude_columns: list[str] = None
     _labels: pd.Series | None = None
 
     def set_initial_df(self, df: pd.DataFrame) -> None:
         self._df_init = df
+
+    def set_exclude_columns(self, columns: list[str]) -> None:
+        self._exclude_columns = columns or []
 
     def get_initial_df(self) -> pd.DataFrame:
         if self._df_init is None:
             raise ValueError('First call "set_initial_df" method')
 
         return self._df_init
+
+    def get_df(self) -> pd.DataFrame:
+        df = self.get_initial_df()
+
+        if self._exclude_columns:
+            columns = list(filter(lambda c: c not in self._exclude_columns, df.columns))
+            df = df[columns]
+
+        return df
 
     def set_target_column(self, target_column: str):
         self._target_column = target_column
